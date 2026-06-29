@@ -74,8 +74,8 @@ graph TD
     Ollama["Ollama
 (Local LLM Inference)"]
 
-    style FastAPI fill:#DC267F,stroke:#333,stroke-width:2px
-    style Nginx fill:#648FFF,stroke:#333,stroke-width:2px
+    style FastAPI fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style Nginx fill:#D3D3D3,stroke:#333,stroke-width:2px, color:#000
     style PostgreSQL fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
     style ChromaDB fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
     style Ollama fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
@@ -88,3 +88,49 @@ graph TD
 -   **PostgreSQL**: Used for structured data storage, managing user information and configurations due to its reliability and extensibility.
 -   **ChromaDB**: Essential for storing and searching vector embeddings, enabling semantic search and context retrieval for LLMs.
 -   **Ollama**: Facilitates local-first AI processing by running various large language models on local hardware, ensuring privacy and reducing latency.
+
+
+## Agent Architecture
+
+```mermaid
+graph TD
+    User -->|Input| SystemPrompt["System Prompt (Goal)"]
+    SystemPrompt --> LangGraph
+    LangGraph --> LiteLLM
+    LiteLLM --> Planner
+    Planner --> SkillRouter["Skill Router (tool name)"]
+    SkillRouter --> Tools["Tools (Read/Action)"]
+    SkillRouter --> MCPServers["MCP Servers (Multi-Capability-Plugins)"]
+    SkillRouter --> ExternalServices["Scripts / APIs / External Services"]
+
+    LangGraph --> Memory["Memory (Long/Short Term)"]
+    LangGraph --> Langfuse["Langfuse (Observability/Debugging)"]
+
+    style SystemPrompt fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style LangGraph fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style LiteLLM fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style Planner fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style SkillRouter fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style Tools fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style MCPServers fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style ExternalServices fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style Memory fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+    style Langfuse fill:#D3D3D3,stroke:#333,stroke-width:2px,color:#000
+```
+
+### Services Description:
+
+-   **System Prompt**: Defines the overarching goal and context for the AI assistant, guiding its behavior and task execution.
+-   **LangGraph**: Orchestrates the interaction between various components, managing the state and flow of complex agentic workflows.
+-   **LiteLLM**: Provides a unified interface for interacting with various Large Language Models (LLMs), abstracting away differences in API calls and model providers.
+-   **Memory**: Stores historical context and learned information, enabling the agent to maintain continuity and improve its performance over time (both short-term and long-term memory).
+-   **Langfuse**: Provides observability and debugging capabilities for the agent's operations, allowing for tracking, monitoring, and analyzing agent behavior.
+-   **Planner**: Interprets the user's goal and generates a step-by-step plan to achieve it, leveraging available tools and information.
+-   **Skill Router**: Directs the execution flow to the appropriate tools or agents based on the current step in the plan, enabling modularity and extensibility.
+-   **Tools (Read/Action)**: Encapsulate specific functionalities, allowing the agent to interact with external systems or perform specific actions (e.g., reading files, calling APIs, executing scripts).
+-   **MCP Servers (Multi-Capability-Plugins)**: Host and manage various plugins and capabilities, providing a robust and extensible environment for agent operations.
+-   **Scripts / APIs / External Services**: Represent the underlying infrastructure and external integrations that the tools interact with to perform their functions.
+
+## Data Architecture
+
+# Nomenclature
